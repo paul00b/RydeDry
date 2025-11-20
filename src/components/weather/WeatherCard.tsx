@@ -1,6 +1,6 @@
 import type { WeatherSlot } from '../../types';
 import { getWeatherEmoji } from '../../utils/weather';
-import { MapPin, Thermometer, Wind, Droplets, CloudSun } from 'lucide-react';
+import { Thermometer, Wind, Droplets, CloudSun } from 'lucide-react';
 
 interface WeatherCardProps {
   weather: WeatherSlot | null;

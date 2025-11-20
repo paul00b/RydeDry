@@ -5,11 +5,10 @@ import { Clock } from 'lucide-react';
 
 interface WeatherTimelineProps {
   slots: WeatherSlot[];
-  title?: string;
   location?: string;
 }
 
-export function WeatherTimeline({ slots, title = 'Prévision', location = 'Localisation' }: WeatherTimelineProps) {
+export function WeatherTimeline({ slots, location = 'Localisation' }: WeatherTimelineProps) {
   if (slots.length === 0) {
     return (
       <div className="bg-[var(--color-card)] rounded-[var(--radius-card)] shadow-[var(--shadow-card)] p-5 min-h-[220px] flex items-center justify-center">
