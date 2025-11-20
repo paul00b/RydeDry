@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Settings as SettingsType } from '../types';
 import { PageHeader } from '../components/layout/PageHeader';
 import { Bell, MapPin, AlertTriangle, Save } from 'lucide-react';
+import { requestNotificationPermission, sendTestNotification, isNotificationSupported } from '../utils/notification';
 
 interface SettingsProps {
   settings: SettingsType;
@@ -25,46 +26,23 @@ export function Settings({ settings, updateSettings, onThemeToggle }: SettingsPr
     setTimeout(() => setSaved(false), 2000);
   };
 
-  const requestNotificationPermission = async () => {
-    if (!('Notification' in window)) {
-      alert('Les notifications ne sont pas supportées par votre navigateur');
-      return;
-    }
-
-    const permission = await Notification.requestPermission();
-    if (permission === 'granted') {
+  const handleRequestPermission = async () => {
+    const granted = await requestNotificationPermission();
+    if (granted) {
       updateSettings({ notificationsEnabled: true });
-      new Notification('RideDry', {
-        body: 'Les notifications sont maintenant activées !',
-        icon: '/vite.svg',
-      });
     }
   };
 
-  const sendTestNotification = () => {
-    if (!('Notification' in window)) {
-      alert('Les notifications ne sont pas supportées par votre navigateur');
-      return;
-    }
-
-    if (Notification.permission !== 'granted') {
-      alert('Veuillez d\'abord autoriser les notifications');
-      return;
-    }
-
+  const handleTestNotification = async () => {
     setTestPending(true);
     
-    setTimeout(() => {
-      new Notification('🚴 RideDry - Test', {
-        body: 'C\'est le moment de partir ! Aucune pluie prévue pendant votre trajet 🌤️',
-        icon: '/vite.svg',
-        badge: '/vite.svg',
-      });
+    setTimeout(async () => {
+      await sendTestNotification();
       setTestPending(false);
     }, 5000);
   };
-  
-  const notificationStatus = 'Notification' in window
+
+  const notificationStatus = isNotificationSupported()
     ? Notification.permission
     : 'unsupported';
 
@@ -157,7 +135,7 @@ export function Settings({ settings, updateSettings, onThemeToggle }: SettingsPr
               
               {notificationStatus !== 'granted' && notificationStatus !== 'unsupported' && (
                 <button
-                  onClick={requestNotificationPermission}
+                  onClick={handleRequestPermission}
                   className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-[var(--radius-button)] text-sm hover:bg-[var(--color-primary-light)] transition-colors"
                 >
                   Activer
@@ -168,7 +146,7 @@ export function Settings({ settings, updateSettings, onThemeToggle }: SettingsPr
             {/* Bouton de test */}
             {notificationStatus === 'granted' && (
               <button
-                onClick={sendTestNotification}
+                onClick={handleTestNotification}
                 disabled={testPending}
                 className="w-full px-4 py-2 border border-[var(--color-border)] rounded-[var(--radius-button)] text-sm text-[var(--color-text)] hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
@@ -178,8 +156,8 @@ export function Settings({ settings, updateSettings, onThemeToggle }: SettingsPr
 
             <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
               <p className="text-xs text-amber-900">
-                <strong>Note :</strong> Les notifications dans le navigateur ne fonctionnent que lorsque l'onglet est ouvert.
-                Pour des notifications persistantes, il faudrait utiliser un service backend (non inclus dans ce MVP).
+                <strong>Note :</strong> Sur mobile (PWA), les notifications fonctionnent en arrière-plan grâce au Service Worker.
+                Assurez-vous d'installer l'application sur votre écran d'accueil pour profiter de cette fonctionnalité.
               </p>
             </div>
           </div>

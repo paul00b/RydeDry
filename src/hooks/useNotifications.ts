@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Trip, Settings, WeatherSlot } from '../types';
 import { calculateOptimalDepartureTime, formatTime } from '../utils/optimalTime';
+import { sendNotification, isNotificationGranted } from '../utils/notification';
 
 interface UseNotificationsProps {
   trips: Trip[];
@@ -25,7 +26,7 @@ export function useNotifications({ trips, settings, weatherData }: UseNotificati
 
   useEffect(() => {
     // Ne rien faire si les notifications ne sont pas autorisées
-    if (!settings.notificationsEnabled || Notification.permission !== 'granted') {
+    if (!settings.notificationsEnabled || !isNotificationGranted()) {
       return;
     }
 
@@ -118,8 +119,8 @@ export function useNotifications({ trips, settings, weatherData }: UseNotificati
 /**
  * Envoie une notification pour un trajet
  */
-function sendTripNotification(trip: Trip, departureTime: Date, maxPrecipProb: number) {
-  if (!('Notification' in window) || Notification.permission !== 'granted') {
+async function sendTripNotification(trip: Trip, departureTime: Date, maxPrecipProb: number) {
+  if (!isNotificationGranted()) {
     return;
   }
 
@@ -142,11 +143,9 @@ function sendTripNotification(trip: Trip, departureTime: Date, maxPrecipProb: nu
     message = `Meilleur créneau à ${timeStr} pour "${trip.name}". Forte pluie prévue (${Math.round(maxPrecipProb)}%). Équipement conseillé !`;
   }
 
-  new Notification(`${emoji} RideDry - ${trip.name}`, {
+  await sendNotification(`${emoji} RideDry - ${trip.name}`, {
     body: message,
-    icon: '/vite.svg',
-    badge: '/vite.svg',
-    tag: `trip-${trip.id}`, // Évite les doublons
-    requireInteraction: false,
+    tag: `trip-${trip.id}`,
+    data: { tripId: trip.id },
   });
 }
