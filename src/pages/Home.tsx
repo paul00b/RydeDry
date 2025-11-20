@@ -135,14 +135,18 @@ export function Home({ settings, tripsHook, onNavigate, onThemeToggle }: HomePro
 
           {trips.length === 0 ? (
             <div className="bg-[var(--color-card)] rounded-[var(--radius-card)] shadow-[var(--shadow-card)] p-8 text-center">
-              <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+              <button
+                onClick={() => onNavigate('trips')}
+                className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer"
+                aria-label="Ajouter un trajet"
+              >
                 <Plus className="w-8 h-8 text-[var(--color-text-lighter)]" />
-              </div>
+              </button>
               <p className="text-[var(--color-text-light)] mb-4">
                 Aucun trajet configuré
               </p>
               <p className="text-sm text-[var(--color-text-lighter)]">
-                Allez dans l'onglet "Trajets" pour créer votre premier trajet
+                Cliquez sur le bouton + pour créer votre premier trajet
               </p>
             </div>
           ) : (
