@@ -20,7 +20,7 @@ export function WeatherRadar({ location, lat = 48.8566, lon = 2.3522 }: WeatherR
   const [isPlaying, setIsPlaying] = useState(false);
   const [loading, setLoading] = useState(true);
   const [mapCenter, setMapCenter] = useState<[number, number]>([lat, lon]);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<number | null>(null);
 
   // Mettre à jour le centre de la carte quand les coordonnées changent
   useEffect(() => {
@@ -92,20 +92,6 @@ export function WeatherRadar({ location, lat = 48.8566, lon = 2.3522 }: WeatherR
   const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsPlaying(false);
     setCurrentFrameIndex(parseInt(e.target.value));
-  };
-
-  const togglePlayPause = () => {
-    setIsPlaying(!isPlaying);
-  };
-
-  const goToStart = () => {
-    setIsPlaying(false);
-    setCurrentFrameIndex(0);
-  };
-
-  const goToEnd = () => {
-    setIsPlaying(false);
-    setCurrentFrameIndex(radarFrames.length - 1);
   };
 
   const formatTime = (timestamp: number) => {
@@ -194,7 +180,7 @@ export function WeatherRadar({ location, lat = 48.8566, lon = 2.3522 }: WeatherR
             <span className="text-sm text-[var(--color-text)]">
               {formatTime(radarFrames[currentFrameIndex].time)}
             </span>
-            <span className="text-sm text-[var(--color-primary)]">
+            <span className="text-sm text-[var(--color-text-light)]">
               {getCurrentTimeLabel()}
             </span>
           </div>
