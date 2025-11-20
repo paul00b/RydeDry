@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Settings as SettingsType } from '../types';
 import { PageHeader } from '../components/layout/PageHeader';
+import { NotificationPermissionDialog } from '../components/notifications/NotificationPermissionDialog';
 import { Bell, MapPin, AlertTriangle, Save } from 'lucide-react';
-import { requestNotificationPermission, sendTestNotification, isNotificationSupported } from '../utils/notification';
+import { sendTestNotification, isNotificationSupported } from '../utils/notification';
 
 interface SettingsProps {
   settings: SettingsType;
@@ -15,6 +16,7 @@ export function Settings({ settings, updateSettings, onThemeToggle }: SettingsPr
   const [rainSensitivity, setRainSensitivity] = useState(settings.rainSensitivity);
   const [saved, setSaved] = useState(false);
   const [testPending, setTestPending] = useState(false);
+  const [showNotifDialog, setShowNotifDialog] = useState(false);
 
   const handleSave = () => {
     updateSettings({
@@ -26,11 +28,13 @@ export function Settings({ settings, updateSettings, onThemeToggle }: SettingsPr
     setTimeout(() => setSaved(false), 2000);
   };
 
-  const handleRequestPermission = async () => {
-    const granted = await requestNotificationPermission();
-    if (granted) {
-      updateSettings({ notificationsEnabled: true });
-    }
+  const handleRequestPermission = () => {
+    // Afficher le dialog au lieu de demander directement
+    setShowNotifDialog(true);
+  };
+
+  const handlePermissionGranted = () => {
+    updateSettings({ notificationsEnabled: true });
   };
 
   const handleTestNotification = async () => {
@@ -186,6 +190,14 @@ export function Settings({ settings, updateSettings, onThemeToggle }: SettingsPr
           </p>
         </section>
       </main>
+
+      {/* Dialog de permission de notification */}
+      {showNotifDialog && (
+        <NotificationPermissionDialog
+          onClose={() => setShowNotifDialog(false)}
+          onPermissionGranted={handlePermissionGranted}
+        />
+      )}
     </div>
   );
 }

@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { Trip, DayOfWeek, Settings } from '../types';
 import { PageHeader } from '../components/layout/PageHeader';
 import { TripCard } from '../components/trip/TripCard';
+import { NotificationPermissionDialog } from '../components/notifications/NotificationPermissionDialog';
 import { Plus, X, Save } from 'lucide-react';
+import { isNotificationGranted } from '../utils/notification';
 
 interface TripsProps {
   tripsHook: any;
@@ -112,6 +114,8 @@ function TripForm({ trip, onSave, onCancel }: TripFormProps) {
     notifyOffsetMinutes: trip?.notifyOffsetMinutes || 15,
   });
 
+  const [showNotifDialog, setShowNotifDialog] = useState(false);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -131,7 +135,27 @@ function TripForm({ trip, onSave, onCancel }: TripFormProps) {
       return;
     }
 
+    // Si les notifications sont activées mais pas autorisées, afficher le dialog
+    if (formData.notificationsEnabled && !isNotificationGranted()) {
+      setShowNotifDialog(true);
+      return;
+    }
+
     onSave(formData);
+  };
+
+  const handleNotificationToggle = (enabled: boolean) => {
+    // Si on active les notifications et qu'elles ne sont pas autorisées
+    if (enabled && !isNotificationGranted()) {
+      setShowNotifDialog(true);
+      return;
+    }
+    
+    setFormData({ ...formData, notificationsEnabled: enabled });
+  };
+
+  const handleNotificationPermissionGranted = () => {
+    setFormData({ ...formData, notificationsEnabled: true });
   };
 
   const toggleDay = (day: DayOfWeek) => {
@@ -304,7 +328,7 @@ function TripForm({ trip, onSave, onCancel }: TripFormProps) {
               <input
                 type="checkbox"
                 checked={formData.notificationsEnabled}
-                onChange={e => setFormData({ ...formData, notificationsEnabled: e.target.checked })}
+                onChange={e => handleNotificationToggle(e.target.checked)}
                 className="w-5 h-5 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
               />
               <span className="text-sm text-[var(--color-text)]">
@@ -348,6 +372,14 @@ function TripForm({ trip, onSave, onCancel }: TripFormProps) {
           Enregistrer
         </button>
       </div>
+
+      {/* Dialog de permission de notification */}
+      {showNotifDialog && (
+        <NotificationPermissionDialog
+          onClose={() => setShowNotifDialog(false)}
+          onPermissionGranted={handleNotificationPermissionGranted}
+        />
+      )}
     </form>
   );
 }
