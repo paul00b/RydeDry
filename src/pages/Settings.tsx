@@ -13,6 +13,7 @@ export function Settings({ settings, updateSettings, onThemeToggle }: SettingsPr
   const [defaultLocation, setDefaultLocation] = useState(settings.defaultLocation);
   const [rainSensitivity, setRainSensitivity] = useState(settings.rainSensitivity);
   const [saved, setSaved] = useState(false);
+  const [testPending, setTestPending] = useState(false);
 
   const handleSave = () => {
     updateSettings({
@@ -40,6 +41,29 @@ export function Settings({ settings, updateSettings, onThemeToggle }: SettingsPr
     }
   };
 
+  const sendTestNotification = () => {
+    if (!('Notification' in window)) {
+      alert('Les notifications ne sont pas supportées par votre navigateur');
+      return;
+    }
+
+    if (Notification.permission !== 'granted') {
+      alert('Veuillez d\'abord autoriser les notifications');
+      return;
+    }
+
+    setTestPending(true);
+    
+    setTimeout(() => {
+      new Notification('🚴 RideDry - Test', {
+        body: 'C\'est le moment de partir ! Aucune pluie prévue pendant votre trajet 🌤️',
+        icon: '/vite.svg',
+        badge: '/vite.svg',
+      });
+      setTestPending(false);
+    }, 5000);
+  };
+  
   const notificationStatus = 'Notification' in window
     ? Notification.permission
     : 'unsupported';
@@ -140,6 +164,17 @@ export function Settings({ settings, updateSettings, onThemeToggle }: SettingsPr
                 </button>
               )}
             </div>
+
+            {/* Bouton de test */}
+            {notificationStatus === 'granted' && (
+              <button
+                onClick={sendTestNotification}
+                disabled={testPending}
+                className="w-full px-4 py-2 border border-[var(--color-border)] rounded-[var(--radius-button)] text-sm text-[var(--color-text)] hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {testPending ? 'Notification dans 5 secondes...' : 'Tester les notifications'}
+              </button>
+            )}
 
             <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
               <p className="text-xs text-amber-900">

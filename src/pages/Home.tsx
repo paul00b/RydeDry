@@ -6,6 +6,8 @@ import { WeatherRadar } from '../components/weather/WeatherRadar';
 import { NextTripCard } from '../components/trip/NextTripCard';
 import { TripCard } from '../components/trip/TripCard';
 import { useWeather } from '../hooks/useWeather';
+import { useMultiLocationWeather } from '../hooks/useMultiLocationWeather';
+import { useNotifications } from '../hooks/useNotifications';
 import { calculateOptimalDepartureTime } from '../utils/optimalTime';
 import { Plus } from 'lucide-react';
 
@@ -23,6 +25,16 @@ export function Home({ settings, tripsHook, onNavigate, onThemeToggle }: HomePro
     settings.apiKey
   );
   const { trips, getNextActiveTrip, getActiveTripsToday } = tripsHook;
+  
+  // Charger la météo pour toutes les localisations des trajets (pour les notifications)
+  const { weatherData } = useMultiLocationWeather(trips, settings.apiKey);
+  
+  // Activer le système de notifications
+  useNotifications({
+    trips,
+    settings,
+    weatherData,
+  });
   
   const [nextTrip, setNextTrip] = useState<Trip | null>(null);
   const [optimalTime, setOptimalTime] = useState<OptimalTimeResult | null>(null);
