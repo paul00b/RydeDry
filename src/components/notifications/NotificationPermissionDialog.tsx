@@ -11,14 +11,26 @@ export function NotificationPermissionDialog({
   onClose, 
   onPermissionGranted 
 }: NotificationPermissionDialogProps) {
-  const platform = isIOS() ? 'ios' : isAndroid() ? 'android' : 'desktop';
+  // Détection sécurisée de la plateforme
+  let platform: 'ios' | 'android' | 'desktop' = 'desktop';
+  
+  try {
+    platform = isIOS() ? 'ios' : isAndroid() ? 'android' : 'desktop';
+  } catch (error) {
+    console.error('Erreur détection plateforme:', error);
+  }
 
   const handleRequestPermission = async () => {
-    const granted = await requestNotificationPermission();
-    
-    if (granted) {
-      onPermissionGranted?.();
-      onClose();
+    try {
+      const granted = await requestNotificationPermission();
+      
+      if (granted) {
+        onPermissionGranted?.();
+        onClose();
+      }
+    } catch (error) {
+      console.error('Erreur permission notification:', error);
+      alert('Impossible d\'activer les notifications. Veuillez vérifier les paramètres de votre navigateur.');
     }
   };
 
