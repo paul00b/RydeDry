@@ -10,6 +10,7 @@ export function useWeather(location: string, apiKey: string) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
+  const [coordinates, setCoordinates] = useState<{ lat: number; lon: number } | null>(null);
 
   // Charger les données météo
   const loadWeather = async () => {
@@ -19,8 +20,9 @@ export function useWeather(location: string, apiKey: string) {
     setError(null);
 
     try {
-      const data = await fetchWeatherForecast(location, apiKey);
-      setWeather(data);
+      const { slots, coords } = await fetchWeatherForecast(location, apiKey);
+      setWeather(slots);
+      setCoordinates(coords);
       setLastUpdate(new Date());
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur inconnue');
@@ -76,5 +78,6 @@ export function useWeather(location: string, apiKey: string) {
     loadWeather,
     getUpcomingHours,
     getCurrentWeather,
+    coordinates,
   };
 }

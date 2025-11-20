@@ -127,3 +127,12 @@ input, textarea, select {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-text-light);
 }
+
+/* Custom glassmorphism backgrounds */
+.bg-glass-light {
+  background-color: rgb(251 251 251 / 65%);
+}
+
+.dark .bg-glass-light {
+  background-color: rgb(17 24 39 / 95%);
+}

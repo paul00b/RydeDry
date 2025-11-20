@@ -5,9 +5,11 @@ Web-app mobile-first pour planifier vos trajets à vélo en fonction de la mét�
 ## 🎯 Fonctionnalités
 
 - **Météo heure par heure** : Consultez les prévisions pour les prochaines heures
+- **🌧️ Radar de pluie interactif** : Visualisez les précipitations en temps réel et anticipées avec timeline (±2h)
 - **Calcul intelligent** : L'app calcule l'heure de départ optimale pour éviter la pluie
 - **Trajets personnalisés** : Configurez vos trajets quotidiens (maison ↔ boulot, etc.)
 - **Notifications** : Recevez des alertes avant vos trajets (lorsque la page est ouverte)
+- **Mode Dark/Light** : Thème adaptatif avec sauvegarde de préférence
 - **Mobile-first** : Interface optimisée pour smartphone, inspirée de Monday.com
 
 ## 🚀 Installation
@@ -78,6 +80,8 @@ Aucune variable d'environnement n'est requise côté serveur (la clé API est st
 - **Vite** - Build tool ultra-rapide
 - **Tailwind CSS v4** - Styling avec design system custom
 - **OpenWeatherMap API** - Données météo
+- **RainViewer API** - Radar de précipitations (gratuit)
+- **Leaflet** + **React Leaflet** - Cartographie interactive
 - **LocalStorage** - Persistance locale (trajets, réglages)
 - **Lucide React** - Icônes modernes
 
@@ -86,7 +90,9 @@ Aucune variable d'environnement n'est requise côté serveur (la clé API est st
 ### Pages
 
 1. **Accueil (Home)**
-   - Météo actuelle et timeline horaire
+   - **Carousel météo** : Swipe entre météo actuelle et radar pluie
+   - **Radar interactif** : Carte Leaflet avec timeline ±2h et animation
+   - Timeline horaire des prévisions
    - Prochain trajet avec heure de départ recommandée
    - Liste des trajets configurés
 
@@ -94,11 +100,13 @@ Aucune variable d'environnement n'est requise côté serveur (la clé API est st
    - Gestion complète des trajets
    - Ajout/modification/suppression
    - Configuration détaillée (horaires, jours actifs, notifications)
+   - Bouton flottant "Ajouter un trajet"
 
 3. **Réglages**
    - Clé API OpenWeather
    - Localisation par défaut
    - Sensibilité à la pluie
+   - Thème Dark/Light
    - Gestion des notifications
 
 ### Logique métier
@@ -118,17 +126,27 @@ L'algorithme :
 - Fallback sur données mockées si erreur ou pas de clé API
 - Interpolation des données horaires
 
+**Radar de précipitations** (`src/components/weather/WeatherRadar.tsx`)
+
+- API RainViewer pour données radar gratuites
+- Historique -2h et prévisions +2h (nowcasting)
+- Animation automatique avec contrôles Play/Pause
+- Timeline interactive avec slider
+- Voir [RADAR.md](./RADAR.md) pour documentation complète
+
 ## ⚠️ Limitations du MVP
 
 ### Ce qui est implémenté :
 
 ✅ Interface mobile-first responsive  
+✅ Radar de pluie interactif avec timeline  
 ✅ Calcul intelligent de l'heure optimale  
 ✅ Persistance locale (localStorage)  
 ✅ Notifications navigateur (basiques)  
 ✅ Prévisions météo réelles (via API)  
 ✅ Gestion multi-trajets  
 ✅ Design inspiré Monday.com  
+✅ Mode Dark/Light complet  
 
 ### Ce qui n'est PAS implémenté (hors scope MVP) :
 
@@ -154,8 +172,17 @@ Le design s'inspire de Monday.com :
 - **Typographie** : Hiérarchie claire, espacements généreux
 - **Layout** : Mobile-first, bottom navigation
 - **Interactions** : Transitions fluides, hover states
+- **Thème** : Dark/Light avec variables CSS adaptatives
 
 Variables CSS custom dans `src/styles/globals.css`.
+
+## 📚 Documentation
+
+- [RADAR.md](./RADAR.md) - Documentation complète du radar météo
+- [INSTALL_RADAR.md](./INSTALL_RADAR.md) - Guide d'installation du radar
+- [CHANGELOG.md](./CHANGELOG.md) - Historique des versions
+- [THEME.md](./THEME.md) - Documentation du système de thème
+- [DEPLOY.md](./DEPLOY.md) - Guide de déploiement
 
 ## 📝 License
 

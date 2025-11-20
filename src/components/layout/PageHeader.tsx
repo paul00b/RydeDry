@@ -37,7 +37,7 @@ export function PageHeader({ title, subtitle, theme, onThemeToggle, showTime = f
   };
 
   return (
-    <header className="bg-white/60 dark:bg-gray-900/60 backdrop-blur-md border-b border-[var(--color-border)] sticky top-0 z-40">
+    <header className="bg-glass-light backdrop-blur-md border-b border-[var(--color-border)] sticky top-0 z-40">
       <div className="max-w-2xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">

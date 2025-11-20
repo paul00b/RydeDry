@@ -10,11 +10,11 @@ const API_BASE_URL = 'https://api.openweathermap.org/data/2.5';
 export async function fetchWeatherForecast(
   location: string,
   apiKey: string
-): Promise<WeatherSlot[]> {
+): Promise<{ slots: WeatherSlot[]; coords: { lat: number; lon: number } }> {
   // Mode démo si pas de clé API ou clé par défaut
   if (!apiKey || apiKey === 'YOUR_API_KEY_HERE' || apiKey.trim() === '') {
     console.log('🎭 Mode démo : utilisation de données météo simulées');
-    return getMockWeatherData();
+    return { slots: getMockWeatherData(), coords: { lat: 48.8566, lon: 2.3522 } }; // Paris par défaut
   }
 
   try {
@@ -25,7 +25,7 @@ export async function fetchWeatherForecast(
     if (!geoResponse.ok) {
       if (geoResponse.status === 401) {
         console.warn('⚠️ Clé API invalide. Bascule en mode démo.');
-        return getMockWeatherData();
+        return { slots: getMockWeatherData(), coords: { lat: 48.8566, lon: 2.3522 } };
       }
       throw new Error('Impossible de trouver cette localisation');
     }
@@ -40,7 +40,7 @@ export async function fetchWeatherForecast(
     if (!forecastResponse.ok) {
       if (forecastResponse.status === 401) {
         console.warn('⚠️ Clé API invalide. Bascule en mode démo.');
-        return getMockWeatherData();
+        return { slots: getMockWeatherData(), coords: { lat, lon } };
       }
       throw new Error('Erreur lors de la récupération des prévisions météo');
     }
@@ -62,11 +62,11 @@ export async function fetchWeatherForecast(
       windSpeed: item.wind.speed,
     }));
 
-    return slots;
+    return { slots, coords: { lat, lon } };
   } catch (error) {
     console.error('Erreur météo:', error);
     // En cas d'erreur, retourner des données mockées
-    return getMockWeatherData();
+    return { slots: getMockWeatherData(), coords: { lat: 48.8566, lon: 2.3522 } };
   }
 }
 

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Settings as SettingsType, Trip, OptimalTimeResult } from '../types';
 import { PageHeader } from '../components/layout/PageHeader';
-import { CurrentWeather } from '../components/weather/CurrentWeather';
-import { WeatherTimeline } from '../components/weather/WeatherTimeline';
+import { WeatherCarousel } from '../components/weather/WeatherCarousel';
+import { WeatherRadar } from '../components/weather/WeatherRadar';
 import { NextTripCard } from '../components/trip/NextTripCard';
 import { TripCard } from '../components/trip/TripCard';
 import { useWeather } from '../hooks/useWeather';
@@ -18,7 +18,7 @@ interface HomeProps {
 
 export function Home({ settings, tripsHook, onNavigate, onThemeToggle }: HomeProps) {
   const location = settings.defaultLocation;
-  const { weather, getCurrentWeather, getUpcomingHours } = useWeather(
+  const { weather, getCurrentWeather, getUpcomingHours, coordinates } = useWeather(
     location,
     settings.apiKey
   );
@@ -81,14 +81,24 @@ export function Home({ settings, tripsHook, onNavigate, onThemeToggle }: HomePro
         )}
         */}
 
-        {/* Météo actuelle */}
+        {/* Carousel Météo + Prochaines heures */}
         <section>
-          <CurrentWeather weather={currentWeather} location={location} />
+          <WeatherCarousel 
+            weather={currentWeather}
+            upcomingSlots={upcomingHours}
+            loading={weather.length === 0}
+            error={null}
+            location={location}
+          />
         </section>
 
-        {/* Timeline météo */}
+        {/* Radar météo */}
         <section>
-          <WeatherTimeline slots={upcomingHours} />
+          <WeatherRadar 
+            location={location}
+            lat={coordinates?.lat}
+            lon={coordinates?.lon}
+          />
         </section>
 
         {/* Prochain trajet */}
