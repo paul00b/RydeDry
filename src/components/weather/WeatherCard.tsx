@@ -1,6 +1,6 @@
 import type { WeatherSlot } from '../../types';
 import { getWeatherEmoji } from '../../utils/weather';
-import { MapPin, Thermometer, Wind, Droplets } from 'lucide-react';
+import { MapPin, Thermometer, Wind, Droplets, CloudSun } from 'lucide-react';
 
 interface WeatherCardProps {
   weather: WeatherSlot | null;
@@ -30,19 +30,16 @@ export function WeatherCard({ weather, loading, error, location = 'Localisation'
 
   return (
     <div className="bg-[var(--color-card)] rounded-[var(--radius-card)] shadow-[var(--shadow-card)] p-5 min-h-[220px] flex flex-col">
-      {/* Titre et localisation */}
-      <div className="mb-3">
-        <h3 className="text-[var(--color-text)] mb-1">Météo actuelle</h3>
-        <div className="flex items-center gap-2">
-          <MapPin className="w-4 h-4 text-[var(--color-text-light)]" />
-          <span className="text-sm text-[var(--color-text-light)]">{location}</span>
-        </div>
+      {/* Titre avec icône */}
+      <div className="flex items-center gap-2 mb-3">
+        <CloudSun className="w-4 h-4 text-[var(--color-text-lighter)]" />
+        <span className="text-sm text-[var(--color-text-lighter)]">Météo actuelle - {location}</span>
       </div>
 
       <div className="flex items-center justify-between flex-1">
         <div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-4xl">{emoji}</span>
+          <div className="flex items-center gap-3">
+            <span className="text-6xl">{emoji}</span>
             <div>
               <div className="text-3xl text-[var(--color-text)]">
                 {weather.temperature}°
