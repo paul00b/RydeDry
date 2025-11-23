@@ -1,13 +1,14 @@
 {
   "name": "RideDry - Évitez la pluie à vélo",
   "short_name": "RideDry",
-  "description": "Planifiez vos trajets à vélo en fonction de la météo",
+  "description": "Planifiez vos trajets à vélo en fonction de la météo avec notifications intelligentes",
   "theme_color": "#6161ff",
   "background_color": "#f6f5fb",
   "display": "standalone",
-  "orientation": "portrait",
+  "orientation": "portrait-primary",
   "scope": "/",
   "start_url": "/",
+  "categories": ["lifestyle", "travel", "weather"],
   "icons": [
     {
       "src": "/icon-192.png",
@@ -21,5 +22,20 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "shortcuts": [
+    {
+      "name": "Mes trajets",
+      "short_name": "Trajets",
+      "description": "Voir mes trajets configurés",
+      "url": "/?page=trips",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "screenshots": []
 }

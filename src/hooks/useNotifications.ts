@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Trip, Settings, WeatherSlot } from '../types';
 import { calculateOptimalDepartureTime, formatTime } from '../utils/optimalTime';
 import { sendNotification, isNotificationGranted } from '../utils/notification';
+import { keepAliveManager } from '../utils/keepAlive';
 
 interface UseNotificationsProps {
   trips: Trip[];
@@ -19,15 +20,31 @@ interface ScheduledNotification {
  * Hook pour gérer l'envoi automatique de notifications
  * Vérifie périodiquement les trajets actifs et envoie des notifications
  * au moment opportun (notifyOffsetMinutes avant le départ optimal)
+ * 
+ * Version améliorée avec Keep-Alive system
  */
 export function useNotifications({ trips, settings, weatherData }: UseNotificationsProps) {
   const scheduledNotifications = useRef<Map<string, ScheduledNotification>>(new Map());
   const checkInterval = useRef<number | null>(null);
+  const keepAliveStarted = useRef(false);
 
   useEffect(() => {
     // Ne rien faire si les notifications ne sont pas autorisées
     if (!settings.notificationsEnabled || !isNotificationGranted()) {
+      // Arrêter le keep-alive si actif
+      if (keepAliveStarted.current) {
+        keepAliveManager.stop();
+        keepAliveStarted.current = false;
+      }
       return;
+    }
+
+    // Démarrer le système Keep-Alive
+    if (!keepAliveStarted.current) {
+      keepAliveManager.start().then(() => {
+        console.log('✅ Keep-Alive system démarré');
+        keepAliveStarted.current = true;
+      });
     }
 
     // Fonction qui vérifie les trajets et envoie les notifications
@@ -98,6 +115,11 @@ export function useNotifications({ trips, settings, weatherData }: UseNotificati
           scheduledNotifications.current.delete(key);
         }
       });
+      
+      // Synchroniser les données avec le Service Worker pour consultation en background
+      if (keepAliveManager.isRunning()) {
+        keepAliveManager.syncDataToServiceWorker(trips, weatherData);
+      }
     };
 
     // Vérifier immédiatement

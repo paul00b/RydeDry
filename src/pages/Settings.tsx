@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { Settings as SettingsType } from '../types';
 import { PageHeader } from '../components/layout/PageHeader';
 import { NotificationPermissionDialog } from '../components/notifications/NotificationPermissionDialog';
+import { KeepAliveInfo } from '../components/notifications/KeepAliveInfo';
 import { Bell, MapPin, AlertTriangle, Save } from 'lucide-react';
-import { sendTestNotification, isNotificationSupported } from '../utils/notification';
+import { sendTestNotification, isNotificationSupported, isNotificationGranted } from '../utils/notification';
+import { keepAliveManager } from '../utils/keepAlive';
 
 interface SettingsProps {
   settings: SettingsType;
@@ -197,6 +199,13 @@ export function Settings({ settings, updateSettings, onThemeToggle }: SettingsPr
           onClose={() => setShowNotifDialog(false)}
           onPermissionGranted={handlePermissionGranted}
         />
+      )}
+
+      {/* Informations sur la conservation de l'application en arrière-plan */}
+      {isNotificationGranted() && (
+        <div className="max-w-2xl mx-auto px-6 pb-6">
+          <KeepAliveInfo isActive={keepAliveManager.isRunning()} />
+        </div>
       )}
     </div>
   );

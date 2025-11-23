@@ -8,7 +8,8 @@ Web-app mobile-first pour planifier vos trajets à vélo en fonction de la mét�
 - **🌧️ Radar de pluie interactif** : Visualisez les précipitations en temps réel et anticipées avec timeline (±2h)
 - **Calcul intelligent** : L'app calcule l'heure de départ optimale pour éviter la pluie
 - **Trajets personnalisés** : Configurez vos trajets quotidiens (maison ↔ boulot, etc.)
-- **Notifications** : Recevez des alertes avant vos trajets (lorsque la page est ouverte)
+- **🔔 Notifications Keep-Alive** : Système avancé de notifications même en arrière-plan (onglet ouvert)
+- **📱 PWA optimisée** : Installable sur mobile avec Service Worker avancé
 - **Mode Dark/Light** : Thème adaptatif avec sauvegarde de préférence
 - **Mobile-first** : Interface optimisée pour smartphone, inspirée de Monday.com
 
@@ -142,7 +143,9 @@ L'algorithme :
 ✅ Radar de pluie interactif avec timeline  
 ✅ Calcul intelligent de l'heure optimale  
 ✅ Persistance locale (localStorage)  
-✅ Notifications navigateur (basiques)  
+✅ **Notifications Keep-Alive** (fonctionnent onglet ouvert, même en arrière-plan) ✨  
+✅ **Service Worker avancé** avec IndexedDB ✨  
+✅ **PWA installable** sur mobile ✨  
 ✅ Prévisions météo réelles (via API)  
 ✅ Gestion multi-trajets  
 ✅ Design inspiré Monday.com  
@@ -150,10 +153,11 @@ L'algorithme :
 
 ### Ce qui n'est PAS implémenté (hors scope MVP) :
 
-❌ **Notifications persistantes** : Les notifications ne fonctionnent que quand l'onglet est ouvert. Pour des notifications push réelles, il faudrait :
-  - Un service worker
-  - Un backend pour déclencher les notifications
-  - Une intégration Push API
+❌ **Notifications app fermée** : Les notifications ne fonctionnent que quand le navigateur est ouvert (même en arrière-plan OK). Pour des notifications avec navigateur fermé, il faudrait :
+  - Un backend avec Web Push API
+  - Serveur pour déclencher les notifications
+  - VAPID keys et gestion des subscriptions
+  - **Alternative disponible :** Prompt complet pour app Android native dans `ANDROID-NATIVE-PROMPT.md`
 
 ❌ **Géolocalisation automatique** : Le champ localisation est en texte libre (nom de ville). La géolocalisation GPS pourrait être ajoutée avec l'API Geolocation du navigateur.
 
@@ -178,11 +182,21 @@ Variables CSS custom dans `src/styles/globals.css`.
 
 ## 📚 Documentation
 
+### Principales
+- **[NOTIFICATIONS-QUICK-START.md](./NOTIFICATIONS-QUICK-START.md)** - 🔔 Guide rapide du système de notifications Keep-Alive
+- **[NOTIFICATIONS-SOLUTION.md](./NOTIFICATIONS-SOLUTION.md)** - 🔧 Explication technique détaillée du système
 - [RADAR.md](./RADAR.md) - Documentation complète du radar météo
+- [THEME.md](./THEME.md) - Documentation du système de thème Dark/Light
+
+### Techniques
 - [INSTALL_RADAR.md](./INSTALL_RADAR.md) - Guide d'installation du radar
-- [CHANGELOG.md](./CHANGELOG.md) - Historique des versions
-- [THEME.md](./THEME.md) - Documentation du système de thème
 - [DEPLOY.md](./DEPLOY.md) - Guide de déploiement
+- [CHANGELOG.md](./CHANGELOG.md) - Historique des versions
+- [MIGRATION-NOTIFICATIONS.md](./MIGRATION-NOTIFICATIONS.md) - Migration système notifications
+
+### Alternative Android
+- **[ANDROID-NATIVE-PROMPT.md](./ANDROID-NATIVE-PROMPT.md)** - 📱 Prompt complet pour créer une app Android native avec notifications garanties
+- **[ANDROID-QUICK-BRIEF.md](./ANDROID-QUICK-BRIEF.md)** - Version courte du prompt Android
 
 ## 📝 License
 
