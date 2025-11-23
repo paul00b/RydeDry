@@ -187,13 +187,14 @@ export class KeepAliveManager {
     try {
       const registration = await navigator.serviceWorker.ready;
       
-      // @ts-ignore - Periodic Sync est une API expérimentale
+      // Periodic Sync est une API expérimentale non typée
+      // On cast en any pour éviter les erreurs TypeScript
       const status = await navigator.permissions.query({
-        name: 'periodic-background-sync',
+        name: 'periodic-background-sync' as any,
       });
 
       if (status.state === 'granted') {
-        // @ts-ignore
+        // @ts-ignore - periodicSync n'est pas dans les types standards
         await registration.periodicSync.register('check-trips', {
           minInterval: 15 * 60 * 1000, // 15 minutes minimum
         });
