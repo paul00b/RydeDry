@@ -187,7 +187,7 @@ export class KeepAliveManager {
     try {
       const registration = await navigator.serviceWorker.ready;
       
-      // @ts-ignore - Periodic Sync est expérimental
+      // @ts-ignore - Periodic Sync est une API expérimentale
       const status = await navigator.permissions.query({
         name: 'periodic-background-sync',
       });
