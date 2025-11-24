@@ -10,6 +10,17 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <link rel="manifest" href="/manifest.json" />
     <title>RideDry - Évitez la pluie à vélo</title>
+    <style>
+      /* Style de chargement initial pour détecter les problèmes */
+      #root:empty::before {
+        content: "Chargement de RideDry...";
+        display: block;
+        padding: 20px;
+        text-align: center;
+        font-family: system-ui, sans-serif;
+        color: #666;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
