@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Trip, DayOfWeek, Settings } from '../types';
 import { PageHeader } from '../components/layout/PageHeader';
 import { TripCard } from '../components/trip/TripCard';

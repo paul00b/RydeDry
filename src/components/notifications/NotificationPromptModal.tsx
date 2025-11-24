@@ -1,5 +1,4 @@
 import { Bell, X } from 'lucide-react';
-import { Button } from '../ui/button';
 
 interface NotificationPromptModalProps {
   onEnable: () => void;
@@ -45,20 +44,19 @@ export function NotificationPromptModal({ onEnable, onDismiss }: NotificationPro
 
         {/* Actions */}
         <div className="flex flex-col sm:flex-row gap-3">
-          <Button
+          <button
             onClick={onEnable}
-            className="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white"
+            className="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-lg py-3 px-4 flex items-center justify-center gap-2 transition-all"
           >
-            <Bell className="w-4 h-4 mr-2" />
+            <Bell className="w-4 h-4" />
             Activer les notifications
-          </Button>
-          <Button
+          </button>
+          <button
             onClick={onDismiss}
-            variant="outline"
-            className="flex-1"
+            className="flex-1 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg py-3 px-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
           >
             Plus tard
-          </Button>
+          </button>
         </div>
       </div>
     </div>
