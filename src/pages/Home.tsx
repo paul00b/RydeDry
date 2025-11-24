@@ -93,6 +93,13 @@ export function Home({ settings, tripsHook, onNavigate, onThemeToggle }: HomePro
         )}
         */}
 
+        {/* Prochain trajet */}
+        {nextTrip && (
+          <section>
+            <NextTripCard trip={nextTrip} optimalTime={optimalTime} />
+          </section>
+        )}
+
         {/* Carousel Météo + Prochaines heures */}
         <section>
           <WeatherCarousel 
@@ -112,13 +119,6 @@ export function Home({ settings, tripsHook, onNavigate, onThemeToggle }: HomePro
             lon={coordinates?.lon}
           />
         </section>
-
-        {/* Prochain trajet */}
-        {nextTrip && (
-          <section>
-            <NextTripCard trip={nextTrip} optimalTime={optimalTime} />
-          </section>
-        )}
 
         {/* Mes trajets */}
         <section>
