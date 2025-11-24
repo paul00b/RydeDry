@@ -3,8 +3,9 @@ import { Trip, DayOfWeek, Settings } from '../types';
 import { PageHeader } from '../components/layout/PageHeader';
 import { TripCard } from '../components/trip/TripCard';
 import { NotificationPermissionDialog } from '../components/notifications/NotificationPermissionDialog';
+import { NotificationPromptModal } from '../components/notifications/NotificationPromptModal';
 import { Plus, X, Save } from 'lucide-react';
-import { isNotificationGranted } from '../utils/notification';
+import { isNotificationGranted, requestNotificationPermission } from '../utils/notification';
 
 interface TripsProps {
   tripsHook: any;
@@ -12,24 +13,13 @@ interface TripsProps {
   settings?: Settings;
 }
 
+const DISMISSED_NOTIF_PROMPT_KEY = 'ridedry_dismissed_notif_prompt';
+
 export function Trips({ tripsHook, onThemeToggle, settings }: TripsProps) {
   const { trips, addTrip, updateTrip, deleteTrip } = tripsHook;
   const [showForm, setShowForm] = useState(false);
   const [editingTrip, setEditingTrip] = useState<Trip | null>(null);
-  const [showWelcomeNotifDialog, setShowWelcomeNotifDialog] = useState(false);
-
-  // Vérifier les notifications au chargement de la page
-  useEffect(() => {
-    // Si les notifications ne sont pas activées, afficher la modale de bienvenue
-    if (!isNotificationGranted()) {
-      // Petit délai pour éviter que la modale apparaisse trop vite
-      const timer = setTimeout(() => {
-        setShowWelcomeNotifDialog(true);
-      }, 500);
-      
-      return () => clearTimeout(timer);
-    }
-  }, []);
+  const [showNotifPrompt, setShowNotifPrompt] = useState(false);
 
   const handleEdit = (trip: Trip) => {
     setEditingTrip(trip);
@@ -48,12 +38,36 @@ export function Trips({ tripsHook, onThemeToggle, settings }: TripsProps) {
   };
 
   const handleSaveTrip = (tripData: Omit<Trip, 'id'>) => {
+    const isFirstTrip = trips.length === 0;
+    const notifAlreadyGranted = isNotificationGranted();
+    const userDismissedPrompt = localStorage.getItem(DISMISSED_NOTIF_PROMPT_KEY) === 'true';
+
     if (editingTrip) {
       updateTrip(editingTrip.id, tripData);
     } else {
       addTrip(tripData);
+      
+      // Afficher la modale de prompt notification si :
+      // - c'est le premier trajet
+      // - les notifications ne sont pas déjà activées
+      // - l'utilisateur n'a pas déjà refusé
+      if (isFirstTrip && !notifAlreadyGranted && !userDismissedPrompt) {
+        setShowNotifPrompt(true);
+      }
     }
     handleCloseForm();
+  };
+
+  const handleEnableNotifications = async () => {
+    const granted = await requestNotificationPermission();
+    if (granted) {
+      setShowNotifPrompt(false);
+    }
+  };
+
+  const handleDismissNotifPrompt = () => {
+    localStorage.setItem(DISMISSED_NOTIF_PROMPT_KEY, 'true');
+    setShowNotifPrompt(false);
   };
 
   return (
@@ -105,11 +119,11 @@ export function Trips({ tripsHook, onThemeToggle, settings }: TripsProps) {
         )}
       </main>
 
-      {/* Modale de bienvenue pour activer les notifications */}
-      {showWelcomeNotifDialog && (
-        <NotificationPermissionDialog
-          onClose={() => setShowWelcomeNotifDialog(false)}
-          onPermissionGranted={() => setShowWelcomeNotifDialog(false)}
+      {/* Modale de prompt pour activer les notifications */}
+      {showNotifPrompt && (
+        <NotificationPromptModal
+          onDismiss={handleDismissNotifPrompt}
+          onEnable={handleEnableNotifications}
         />
       )}
     </div>
