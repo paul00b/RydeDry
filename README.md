@@ -1,64 +1,38 @@
-# 🚴‍♂️ RideDry - Évitez la pluie à vélo
+# RideDry 🚴‍♂️☀️
 
-Web-app mobile-first pour planifier vos trajets à vélo en fonction de la météo.
+Application web progressive (PWA) pour planifier vos trajets à vélo en évitant la pluie.
 
-## 🎯 Fonctionnalités
+---
 
-- **Météo heure par heure** : Consultez les prévisions pour les prochaines heures
-- **🌧️ Radar de pluie interactif** : Visualisez les précipitations en temps réel et anticipées avec timeline (±2h)
-- **Calcul intelligent** : L'app calcule l'heure de départ optimale pour éviter la pluie
-- **Trajets personnalisés** : Configurez vos trajets quotidiens (maison ↔ boulot, etc.)
-- **🔔 Notifications Keep-Alive** : Système avancé de notifications même en arrière-plan (onglet ouvert)
-- **📱 PWA optimisée** : Installable sur mobile avec Service Worker avancé
-- **Mode Dark/Light** : Thème adaptatif avec sauvegarde de préférence
-- **Mobile-first** : Interface optimisée pour smartphone, inspirée de Monday.com
+## 🚨 Problème mobile résolu !
 
-## 🚀 Installation
+**Si l'app ne fonctionne pas sur mobile**, les correctifs ont été appliqués :
 
-### 1. Prérequis
-- Node.js 16+ et npm
+### ✅ Correctifs principaux
+1. **ErrorBoundary** - Plus d'écran blanc, tu vois le message d'erreur
+2. **Touch events Leaflet** - La carte fonctionne au doigt
+3. **Debug Panel** - Ajoute `?debug` à l'URL pour voir les infos de débogage
+4. **Console logs** - Toutes les erreurs sont capturées
 
-### 2. Installation des dépendances
-```bash
-npm install
+### 🐛 Debug rapide
+Sur mobile, ouvre l'URL avec `?debug` :
 ```
-
-### 3. Configuration de la clé API météo
-
-L'application utilise l'API OpenWeatherMap pour récupérer les prévisions météo.
-
-**Obtenir une clé API gratuite :**
-
-1. Créez un compte sur [OpenWeatherMap](https://openweathermap.org/api)
-2. Allez dans "API keys" dans votre profil
-3. Copiez votre clé API
-
-**Configurer la clé dans l'app :**
-
-- Lancez l'application (voir ci-dessous)
-- Allez dans l'onglet "Réglages" (icône engrenage)
-- Collez votre clé API dans le champ prévu
-- Cliquez sur "Enregistrer"
-
-> **Mode démo :** Sans clé API, l'app utilise des données météo mockées pour la démonstration.
-
-### 4. Lancer l'application
-
-```bash
-npm run dev
+https://ton-app.vercel.app/?debug
 ```
+Clique sur le bouton 🐛 en bas à droite pour voir :
+- Taille de l'écran
+- État localStorage
+- État réseau
+- User agent
 
-L'application sera accessible sur `http://localhost:5173`
+### 📖 Documentation
+- **[FIXES_SUMMARY.md](FIXES_SUMMARY.md)** - Résumé des correctifs (⭐ COMMENCE ICI)
+- **[MOBILE_TESTING.md](MOBILE_TESTING.md)** - Guide de test mobile complet
+- **[MOBILE_FIX.md](MOBILE_FIX.md)** - Détails techniques des correctifs
 
-### 5. Build pour production
+---
 
-```bash
-npm run build
-```
-
-Les fichiers optimisés seront dans le dossier `dist/`.
-
-## 📦 Déploiement
+## 🚀 Déploiement
 
 ### Netlify
 

@@ -19,6 +19,7 @@ export function WeatherRadar({ location, lat = 48.8566, lon = 2.3522 }: WeatherR
   const [currentFrameIndex, setCurrentFrameIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [mapCenter, setMapCenter] = useState<[number, number]>([lat, lon]);
   const intervalRef = useRef<number | null>(null);
 
@@ -34,7 +35,13 @@ export function WeatherRadar({ location, lat = 48.8566, lon = 2.3522 }: WeatherR
     const fetchRadarData = async () => {
       try {
         setLoading(true);
+        setError(null);
         const response = await fetch('https://api.rainviewer.com/public/weather-maps.json');
+        
+        if (!response.ok) {
+          throw new Error('Impossible de charger le radar');
+        }
+        
         const data = await response.json();
         
         // Combiner les frames passées et futures
@@ -49,12 +56,17 @@ export function WeatherRadar({ location, lat = 48.8566, lon = 2.3522 }: WeatherR
           }))
         ];
         
+        if (frames.length === 0) {
+          throw new Error('Aucune donnée radar disponible');
+        }
+        
         setRadarFrames(frames);
         // Positionner sur "maintenant" (dernière frame du passé)
         setCurrentFrameIndex(data.radar.past.length - 1);
         setLoading(false);
       } catch (error) {
         console.error('Erreur lors du chargement du radar:', error);
+        setError('Impossible de charger le radar météo');
         setLoading(false);
       }
     };
@@ -69,7 +81,7 @@ export function WeatherRadar({ location, lat = 48.8566, lon = 2.3522 }: WeatherR
   // Animation automatique
   useEffect(() => {
     if (isPlaying && radarFrames.length > 0) {
-      intervalRef.current = setInterval(() => {
+      intervalRef.current = window.setInterval(() => {
         setCurrentFrameIndex((prev) => {
           if (prev >= radarFrames.length - 1) {
             return 0; // Boucle
@@ -124,10 +136,14 @@ export function WeatherRadar({ location, lat = 48.8566, lon = 2.3522 }: WeatherR
       </div>
 
       {/* Carte avec légende en overlay */}
-      <div className="relative h-[200px] bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden mb-4">
+      <div className="relative h-[200px] bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden mb-4 touch-pan-y">
         {loading ? (
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-[var(--color-text-light)]">Chargement du radar...</div>
+          </div>
+        ) : error ? (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-[var(--color-text-light)] text-center px-4">{error}</div>
           </div>
         ) : (
           <>
@@ -136,6 +152,10 @@ export function WeatherRadar({ location, lat = 48.8566, lon = 2.3522 }: WeatherR
               zoom={9}
               style={{ height: '100%', width: '100%' }}
               zoomControl={false}
+              touchZoom={true}
+              scrollWheelZoom={false}
+              dragging={true}
+              tap={true}
             >
               <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -152,7 +172,7 @@ export function WeatherRadar({ location, lat = 48.8566, lon = 2.3522 }: WeatherR
             </MapContainer>
             
             {/* Légende en overlay transparente */}
-            <div className="absolute top-2 right-2 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-lg px-3 py-2 shadow-lg">
+            <div className="absolute top-2 right-2 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-lg px-3 py-2 shadow-lg pointer-events-none">
               <div className="flex items-center gap-2 text-xs">
                 <div className="flex items-center gap-1">
                   <div className="w-3 h-3 rounded" style={{ backgroundColor: 'rgba(66, 135, 245, 0.3)' }}></div>
@@ -173,7 +193,7 @@ export function WeatherRadar({ location, lat = 48.8566, lon = 2.3522 }: WeatherR
       </div>
 
       {/* Contrôles de timeline - Seulement le slider */}
-      {!loading && radarFrames.length > 0 && (
+      {!loading && !error && radarFrames.length > 0 && (
         <div className="space-y-2">
           {/* Temps actuel */}
           <div className="flex items-center justify-between">

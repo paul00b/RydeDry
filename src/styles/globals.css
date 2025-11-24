@@ -74,6 +74,12 @@ body {
   min-height: 100vh;
   color: var(--color-text);
   transition: background 0.3s ease, color 0.3s ease;
+  /* Empêcher le zoom sur iOS lors du focus */
+  -webkit-text-size-adjust: 100%;
+  /* Améliorer le scroll sur iOS */
+  -webkit-overflow-scrolling: touch;
+  /* Désactiver le tap highlight */
+  -webkit-tap-highlight-color: transparent;
 }
 
 h1 {

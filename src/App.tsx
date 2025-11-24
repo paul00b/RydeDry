@@ -5,6 +5,7 @@ import { Settings } from './pages/Settings';
 import { BottomNav } from './components/layout/BottomNav';
 import { useSettings } from './hooks/useSettings';
 import { useTrips } from './hooks/useTrips';
+import { DebugPanel } from './components/dev/DebugPanel';
 
 type Page = 'home' | 'trips' | 'settings';
 
@@ -45,6 +46,9 @@ function App() {
     <div className="min-h-screen pb-20">
       {renderPage()}
       <BottomNav currentPage={currentPage} onNavigate={setCurrentPage} />
+      
+      {/* Debug panel - seulement en dev ou si ?debug dans l'URL */}
+      {(import.meta.env.DEV || window.location.search.includes('debug')) && <DebugPanel />}
     </div>
   );
 }
