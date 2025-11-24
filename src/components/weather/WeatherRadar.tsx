@@ -155,7 +155,6 @@ export function WeatherRadar({ location, lat = 48.8566, lon = 2.3522 }: WeatherR
               touchZoom={true}
               scrollWheelZoom={false}
               dragging={true}
-              tap={true}
             >
               <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'

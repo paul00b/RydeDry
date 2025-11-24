@@ -13,6 +13,8 @@ function App() {
   const [currentPage, setCurrentPage] = useState<Page>('home');
   const { settings, updateSettings } = useSettings();
   const tripsHook = useTrips();
+  const isDev = import.meta.env?.DEV || false;
+  const isDebugMode = isDev || (typeof window !== 'undefined' && window.location.search.includes('debug'));
 
   // Appliquer le thème au body
   useEffect(() => {
@@ -48,7 +50,7 @@ function App() {
       <BottomNav currentPage={currentPage} onNavigate={setCurrentPage} />
       
       {/* Debug panel - seulement en dev ou si ?debug dans l'URL */}
-      {(import.meta.env.DEV || window.location.search.includes('debug')) && <DebugPanel />}
+      {isDebugMode && <DebugPanel />}
     </div>
   );
 }

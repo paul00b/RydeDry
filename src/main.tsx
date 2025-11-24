@@ -5,7 +5,8 @@ import './styles/globals.css'
 import 'leaflet/dist/leaflet.css'
 
 // Diagnostics en développement
-if (import.meta.env.DEV) {
+const isDev = import.meta.env?.DEV || false;
+if (isDev) {
   import('./utils/diagnostics').then(({ runDiagnostics }) => {
     runDiagnostics();
   });
